@@ -4,7 +4,7 @@ import {
     EnrollmentType,
     VideoData,
 } from '@/types/types';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useApiContext } from '../contexts/ApiContext';
 import { Button, TextField } from '../dataEntry';
 import ListComponent from '../dataEntry/ListComponent';
@@ -12,6 +12,7 @@ import SwitchComponent from '../dataEntry/SwitchComponent';
 import { Alert } from '@mui/material';
 import { MdPodcasts } from 'react-icons/md';
 import Note from '../Note';
+import {data} from '../../data/data.json'
 
 const enrollmentTypeOptions: EnrollmentType[] = [
     'Course',
@@ -65,7 +66,7 @@ const EditPodcastComponent = () => {
 
         if (query.length > 0) {
             const suggestions = data.podcasts.filter(podcast =>
-                podcast.title.toLowerCase().includes(query.toLowerCase())
+                podcast.title && podcast.title.toLowerCase().includes(query.toLowerCase())
             );
             setFilteredSuggestions(suggestions);
         } else {
@@ -78,6 +79,20 @@ const EditPodcastComponent = () => {
         setSearchQuery('');
         setFilteredSuggestions([]);
     };
+
+    useEffect(() => {
+        // Convert podcast to an array if it's not already
+        if (!Array.isArray(podcast)) {
+            setPodcast([]);
+        }
+    }, [podcast]);
+
+    const [query, setQuery] = useState("");
+    useEffect(() => {
+        if (Array.isArray(data.podcasts)) {
+            console.log(data.podcasts.filter(podcast => podcast.title && podcast.title.toLowerCase().includes("Hp")));
+        }
+    }, [data.podcasts]);
 
     return (
         <>
@@ -259,5 +274,3 @@ const Edit = ({ podcast, index, isEdit, handleCancel }: EditProps) => {
 };
 
 export default EditPodcastComponent;
-
-
